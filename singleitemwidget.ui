@@ -30,7 +30,6 @@ opacity:0.04;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(0, 0, 0);
-
 border-radius:3px;
 </string>
    </property>

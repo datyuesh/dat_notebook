@@ -14,6 +14,7 @@
 #include <QMouseEvent>
 #include <QTextEdit>
 #include <QStyleOption>
+#include <QDesktopWidget>
 namespace Ui {
 class ukui_NoteBook;
 }

@@ -23,10 +23,14 @@ void Widget::ukui_init()
     //窗口属性
     setWindowFlags(Qt::FramelessWindowHint);//开启窗口无边框
     setWindowOpacity(0.8);//窗口透明度
+    //弹出位置
+    QDesktopWidget *desktop = QApplication::desktop();
+    move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
     //组件属性
     //ui->listWidget->setAttribute(Qt::WA_TranslucentBackground);//设置透明度
     //ui->toolButton->setAttribute(Qt::WA_TranslucentBackground);
     //标题
+    this->setWindowTitle("Note");
     ui->ukui_labelTitle->setStyleSheet("color:#ffffff;        \
                                         background-color: rgb(0, 0, 0);");
     //按钮
@@ -104,9 +108,9 @@ void Widget::ukui_updateItem(){
         ui->listWidget->addItem(item[txtNum]);
         singleItem[txtNum]= new SingleItemWidget(ui->listWidget);
         ui->listWidget->setItemWidget(item[txtNum],singleItem[txtNum]);
-//        singleItem[txtNum]->ui->toolButtonDel->setStyleSheet("QToolButton#toolButtonDel{image:url(:/new/prefix1/SVG/删除-b-普通.svg);}"
-//                                 "QToolButton#toolButtonDel:hover{image:url(:/new/prefix1/SVG/删除-b-悬停.svg);}"
-//                                 "QToolButton#toolButtonDel:pressed{image:url(:/new/prefix1/SVG/删除-b-点击.svg);}");
+        singleItem[txtNum]->ui->toolButtonDel->setStyleSheet("QToolButton#toolButtonDel{image:url(:/new/prefix1/SVG/delete-b.svg);}"
+                                 "QToolButton#toolButtonDel:hover{image:url(:/new/prefix1/SVG/delete-b-hover.svg);}"
+                                 "QToolButton#toolButtonDel:pressed{image:url(:/new/prefix1/SVG/delete-b-click.svg);}");
         //读取数据库,设置label值
         QDateTime dateTime = QDateTime::currentDateTime();//获取当前系统时间
 
@@ -135,25 +139,33 @@ void Widget::ukui_updateItem(){
 //添加Item，保存到数据库
 void Widget::ukui_addItem(){
     rowNum = model->rowCount();
+    int flag = 0;
     QDateTime dateTime = QDateTime::currentDateTime();//获取当前系统时间
     qDebug() << "添加Item，保存到数据库";
     qDebug() << "ukui_addItem rowNum = " << rowNum;
     qDebug() << "ukui_addItem filename = " << filename;
 
-    model->insertRow(rowNum);
-    model->setData(model->index(rowNum, 0), filename);
-    //model->setData(model->index(rowNum, 1), dateTime);
-    model->submitAll();
-    model->setTable("fileInfo");
-    model->select();
+    for(int i = 0;i <= rowNum;i++)
+    {
+        if(filename == model->index(i,0).data().toString())
+        {
+            flag = 1;
+        }
+    }
+    if(flag != 1)
+    {
+        model->insertRow(rowNum);
+        model->setData(model->index(rowNum, 0), filename);
+        //model->setData(model->index(rowNum, 1), dateTime);
+        model->submitAll();
+    }
 
-    qDebug() << "model->rowNum 0 = " << model->index(rowNum, 0).data().toString();
-    //qDebug() << "model->rowNum 1 = " << model->index(rowNum, 1).data().toString();
     for(int i=0; i < rowNum; i++)
     {
         delete item[i];
         delete singleItem[i];
     }
+
     ukui_updateItem();
 }
 
@@ -255,16 +267,16 @@ void Widget::listDoubleClickSlot()
     qDebug() << "currentRow" << ui->listWidget->currentRow();
     //获取当前选中的item下标
     //打开下标对应数据库中存储的文件路径加名称
-    currentFileName = model->index(ui->listWidget->currentRow(), 0).data().toString();
-    QFile currentFile(currentFileName);
-    qDebug() << "listDoubleclick currentFileName = " << currentFileName;
+    ukui_notebook->fileName = model->index(ui->listWidget->currentRow(), 0).data().toString();
+    QFile currentFile(ukui_notebook->fileName);
+    qDebug() << "listDoubleclick currentFileName = " << ukui_notebook->fileName;
     if(!currentFile.open(QIODevice::ReadOnly | QIODevice::Text))
         qDebug() << "open file failed";
     QTextStream aStream(&currentFile);//用文本流读取文件
     aStream.setAutoDetectUnicode(true);//自动检测unicode,才能显示汉字
-    ukui_notebookOpen->ui->textEdit->setPlainText(aStream.readAll());
+    ukui_notebook->ui->textEdit->setPlainText(aStream.readAll());
     currentFile.close();
-    ukui_notebookOpen->show();
+    ukui_notebook->show();
 //    //得到路径不为空
 //    if(!currentFileName.isEmpty()){
 //        QFile *file = new QFile;
@@ -325,7 +337,6 @@ void Widget::fileSavedSlot(QString data)
 {
     qDebug() << "fileSavedSlot";
     filename = data;
-    qDebug() << "fileSavedSlot filename = " << data;
     ukui_addItem();
 }
 

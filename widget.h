@@ -11,6 +11,7 @@
 #include <QSqlQuery>
 #include <QSqlTableModel>
 #include <QListWidgetItem>
+#include <QDesktopWidget>
 #include "ui_ukui_notebook.h"
 #include "ui_singleitemwidget.h"
 #include "sql_create.h"
