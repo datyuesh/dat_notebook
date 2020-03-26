@@ -16,14 +16,6 @@ SingleItemWidget::~SingleItemWidget()
     delete ui;
 }
 
-
-
-void SingleItemWidget::SingleItem_conn()
-{
-    connect(ui->toolButtonDel,SIGNAL(clicked()),this,SLOT(clickDelBtn()));
-}
-
-
 /****************Slots*******************/
 
 void SingleItemWidget::clickDelBtn()
@@ -35,19 +27,47 @@ void SingleItemWidget::clickDelBtn()
 void SingleItemWidget::SingleItem_init()
 {
     qDebug() << "";
-//    //设置图片大小
-//    ui->toolButtonDel->setIconSize(QSize(12,16));
-//    ui->toolButtonLock->setIconSize(QSize(12,16));
     //文本框属性
-    ui->textEdit_Item->setReadOnly(true);//只读
+    //ui->textEdit_Item->setReadOnly(true);//只读
     //ui->textEdit_Item->setFocusPolicy(Qt::NoFocus);//无焦点
-    ui->textEdit_ItemDate->setReadOnly(true);
+    //ui->textEdit_ItemDate->setReadOnly(true);
     //按钮属性
-    ui->toolButtonDel->setStyleSheet("QToolButton#toolButtonDel{image:url(:/new/prefix1/SVG/delete.svg);}"
-                             "QToolButton#toolButtonDel:hover{image:url(:/new/prefix1/SVG/delete-hover.svg);}"
-                             "QToolButton#toolButtonDel:pressed{image:url(:/new/prefix1/SVG/delete-click.svg);}");
+    pushButtonDel = new singleitemButton();
+    pushButtonDel->setObjectName("pushButtonDel");
+    pushButtonDel->setGeometry(QRect(510,20,34,34));
+    pushButtonDel->setParent(this);
+    pushButtonDel->hide();
+
+//    m_pGrouBoxUpButtonHLayout = new QHBoxLayout;
+//    m_pGrouBoxUpButtonHLayout->setContentsMargins(0,5,0,0);
+//    m_pGrouBoxUpButtonHLayout->addWidget(pushbuttonDel);
+//    this->setLayout(m_pGrouBoxUpButtonHLayout);
+
+//    ui->pushButtonDel->setFixedSize(34,34);
+//    ui->pushButtonDel->setIconSize(QSize(16,16));
+//    QIcon pushdelIcon;
+//    pushdelIcon.addFile(":/new/prefix1/SVG/delete-b.svg");
+//    ui->pushButtonDel->setIcon(pushdelIcon);
+
+    ui->label_Item->setStyleSheet("font-size:14px;      \
+                                  font-family:Noto Sans CJK SC;     \
+                                  font-weight:400;      \
+                                  color:rgba(255,255,255,1);        \
+                                  background-color: rgb(0, 0, 0);      \
+                                  line-height:40px;");
+    ui->label_ItemDate->setStyleSheet("font-size:12px;   \
+                             font-family:Noto Sans CJK SC;  \
+                             font-weight:400;   \
+                             color:rgba(255,255,255,1);     \
+                             background-color: rgb(0, 0, 0);      \
+                             line-height:40px;");
+
 }
 
 
+void SingleItemWidget::SingleItem_conn()
+{
+    connect(this->pushButtonDel,SIGNAL(buttonclick()),this,SLOT(clickDelBtn()));
+}
 
 

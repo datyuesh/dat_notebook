@@ -24,13 +24,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+TRANSLATIONS += \
+        ukui_notebook_zh_CN.ts
+
 SOURCES += \
         main.cpp \
+    mythrow.cpp \
+    singleitemButton.cpp \
         widget.cpp \
     singleitemwidget.cpp \
     ukui_notebook.cpp
 
 HEADERS += \
+    mythrow.h \
+    singleitemButton.h \
         widget.h \
     singleitemwidget.h \
     ukui_notebook.h \

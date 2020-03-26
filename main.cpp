@@ -1,6 +1,7 @@
 #include "widget.h"
 #include <QApplication>
-#include "sql_create.h"
+//#include "sql_create.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
