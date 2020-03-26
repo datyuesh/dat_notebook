@@ -40,8 +40,7 @@ HEADERS += \
     singleitemButton.h \
         widget.h \
     singleitemwidget.h \
-    ukui_notebook.h \
-    sql_create.h
+    ukui_notebook.h
 
 FORMS += \
         widget.ui \

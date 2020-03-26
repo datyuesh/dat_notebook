@@ -5,6 +5,13 @@ Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {    
+    translator = new QTranslator;
+    QLocale locale;
+    //获取系统语言环境
+    if ( locale.language() == QLocale::Chinese ) {
+        translator->load(QString(":/new/translation/ukui_notebook_zh_CN.qm"));  //选择翻译文件
+        QApplication::installTranslator(translator);
+    }
     ui->setupUi(this);
     sqlInit();
     ukui_init();
@@ -27,7 +34,6 @@ void Widget::error_throw()
         std::cout << e.what() << std::endl;
     }
 }
-
 
 void Widget::ukui_init()
 {
@@ -136,13 +142,13 @@ void Widget::sqlInit()
 //                              QMessageBox::Ok,QMessageBox::NoButton);
 //        return;
     }
-    ukui_updateItem();
+    sqlUpdateItem();
 }
 
 //读取数据库，更新Item
-void Widget::ukui_updateItem(){
+void Widget::sqlUpdateItem(){
      rowNum = sqlModel->rowCount();
-     qDebug() << "ukui_updateItem" << rowNum;
+     qDebug() << "sqlUpdateItem" << rowNum;
 
      QString currentFileName;
      QString fileContent;
@@ -166,7 +172,6 @@ void Widget::ukui_updateItem(){
         getFileModifyTime(currentFileName);
         qDebug() << "astream.readall" << aStream.readAll() << fileContent;
         singleItem[txtNum]->ui->label_Item->setText(fileContent);
-        //singleItem[txtNum]->ui->label_Item->setText("dat");
         singleItem[txtNum]->ui->label_ItemDate->setText(modifyTime);
         currentFile.close();
         //子窗口Del点击事件
@@ -175,13 +180,13 @@ void Widget::ukui_updateItem(){
 }
 
 //添加Item，保存到数据库
-void Widget::ukui_addItem(){
+void Widget::sqlAddItem(){
     rowNum = sqlModel->rowCount();
     int flag = 0;
 //    QDateTime dateTime = QDateTime::currentDateTime();//获取当前系统时间
     qDebug() << "添加Item，保存到数据库";
-    qDebug() << "ukui_addItem rowNum = " << rowNum;
-    qDebug() << "ukui_addItem filename = " << filename;
+    qDebug() << "sqlAddItem rowNum = " << rowNum;
+    qDebug() << "sqlAddItem filename = " << filename;
 
     for(int i = 0;i <= rowNum;i++)
     {
@@ -204,7 +209,7 @@ void Widget::ukui_addItem(){
         delete singleItem[i];
     }
 
-    ukui_updateItem();
+    sqlUpdateItem();
 }
 
 void Widget::getFileModifyTime(QString fileInfo)
@@ -350,17 +355,13 @@ void Widget::listDelSingleSlot(){
         delete singleItem[i];
     }
     sqlModel->submitAll();   //提交
-    ukui_updateItem();
-    rowNum = sqlModel->rowCount();
-    qDebug() << rowNum;
-
-    //delete item;        //释放指针所指向的列表项
+    sqlUpdateItem();
 }
 
 void Widget::fileSavedSlot(QString data)
 {
     qDebug() << "fileSavedSlot";
     filename = data;
-    ukui_addItem();
+    sqlAddItem();
 }
 
